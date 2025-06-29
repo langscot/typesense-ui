@@ -1,0 +1,19 @@
+{
+  "files": {
+    "includes": ["**", "!node_modules", "!.next"],
+    "ignoreUnknown": false
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "nursery": {
+        "noNestedComponentDefinitions": "off"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "useEditorconfig": true
+  }
+}
