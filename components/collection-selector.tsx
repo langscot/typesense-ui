@@ -38,12 +38,14 @@ export function CollectionSelector({
           {selectedCollectionName ? (
             <div className="flex items-center gap-2">
               <Boxes />
-              {selectedCollectionName}
+              {selectedCollectionName.length > 18
+                ? `${selectedCollectionName.slice(0, 18)}...`
+                : selectedCollectionName}
             </div>
           ) : (
             "Select collection..."
           )}
-          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDownIcon className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
