@@ -43,6 +43,23 @@ These planned features represent the roadmap to v1.0.0. Upon completion, I plan 
 - **Curation/overrides management**: Basic management of curation/override rules.
 - **Document management**: Basic management of documents, including creation, updating, importing, and deletion.
 
+## 🚫 Known Issues
+
+### Mixed Content Restrictions
+
+When Typesense UI is hosted over HTTPS, browsers will block connections to remote Typesense instances that use HTTP (not HTTPS) due to mixed content security restrictions. This primarily affects connections to non-localhost Typesense instances.
+
+**Solutions (in order of preference):**
+
+1. **Configure your Typesense instance to use HTTPS** - The most secure and recommended solution. See the [Typesense SSL/HTTPS documentation](https://typesense.org/docs/28.0/api/server-configuration.html#ssl-https) for configuration instructions.
+   
+2. **Use a proxy to access your Typesense instance** - You can use tools like http-proxy-middleware to proxy requests:
+   ```bash
+   npx http-proxy-middleware --port 8108 --target http://remote-typesense:8108
+   ```
+   Then connect to `http://localhost:8108` in the Typesense UI.
+
+3. **Self-host Typesense UI over HTTP** - If you're running the UI locally or in a controlled environment, you can serve it over HTTP to avoid mixed content restrictions.
 
 ## 📋 Prerequisites
 
