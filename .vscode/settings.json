@@ -8,5 +8,14 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "conventionalCommits.scopes": ["collections"]
+  "conventionalCommits.scopes": [
+    "collections"
+  ],
+  "spellright.language": [
+    "en"
+  ],
+  "spellright.documentTypes": [
+    "latex",
+    "plaintext"
+  ]
 }
