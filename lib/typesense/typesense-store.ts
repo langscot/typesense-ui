@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import type { Client } from "typesense";
 import type { CollectionSchema } from "typesense/lib/Typesense/Collection";
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
@@ -11,6 +12,7 @@ interface TypesenseState {
   connections: TypesenseConnection[];
   activeConnectionId: string | null;
   initializeConnections: () => void;
+  getActiveConnectionClient: () => Client | null;
 
   // Collections
   collections: {
@@ -41,6 +43,7 @@ interface TypesenseState {
   ) => Promise<{ ok: true } | { ok: false; error: string }>;
   addLog: (level: "debug" | "info" | "warn" | "error", message: string) => void;
   fetchCollections: () => Promise<void>;
+  deleteCollection: (collectionName: string) => Promise<boolean>;
 }
 
 export const useTypesenseStore = create<TypesenseState>()(
@@ -62,6 +65,16 @@ export const useTypesenseStore = create<TypesenseState>()(
         },
 
         // Actions
+
+        getActiveConnectionClient() {
+          const activeConnection = get().connections.find(
+            (c) => c.id === get().activeConnectionId,
+          );
+
+          if (!activeConnection) return null;
+
+          return activeConnection.client;
+        },
 
         initializeConnections: async () => {
           const connections = get().connections;
@@ -198,6 +211,7 @@ export const useTypesenseStore = create<TypesenseState>()(
             return { ok: false, error: errorMessage };
           }
         },
+
         addLog: (level, message) => {
           console[level](message);
           set({
@@ -210,11 +224,9 @@ export const useTypesenseStore = create<TypesenseState>()(
 
         // Collections
         fetchCollections: async () => {
-          const activeConnection = get().connections.find(
-            (c) => c.id === get().activeConnectionId,
-          );
+          const client = get().getActiveConnectionClient();
 
-          if (!activeConnection) {
+          if (!client) {
             set({
               collections: {
                 data: get().collections.data,
@@ -229,10 +241,24 @@ export const useTypesenseStore = create<TypesenseState>()(
           set({ collections: { data: [], isLoading: true, error: null } });
 
           try {
-            const collections = await activeConnection.client.collections().retrieve();
+            const collections = await client.collections().retrieve();
             set({ collections: { data: collections, isLoading: false, error: null } });
           } catch (error) {
             set({ collections: { data: get().collections.data, isLoading: false, error: error instanceof Error ? error.message : "Unknown error" } });
+          }
+        },
+
+        // Delete collection
+        async deleteCollection(collectionName) {
+          const client = get().getActiveConnectionClient();
+          if (!client) return false;
+          try {
+            await client.collections(collectionName).delete();
+            set({ collections: { data: get().collections.data.filter((c) => c.name !== collectionName), isLoading: false, error: null } });
+            return true;
+          } catch (error) {
+            console.error(`Failed to delete collection ${collectionName}:`, error);
+            return false;
           }
         },
       }),
@@ -316,9 +342,11 @@ export const useLogs = () => {
 export const useCollections = () => {
   const collections = useTypesenseStore((state) => state.collections);
   const fetchCollections = useTypesenseStore((state) => state.fetchCollections);
+  const deleteCollection = useTypesenseStore((state) => state.deleteCollection)
 
   return {
     collections: collections.data.sort((a, b) => a.name.localeCompare(b.name)),
+    deleteCollection,
     isLoading: collections.isLoading,
     error: collections.error,
     refetch: fetchCollections,

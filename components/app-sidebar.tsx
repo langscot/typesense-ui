@@ -1,16 +1,25 @@
 "use client";
 
 import { useCollections } from "@/lib/typesense/typesense-store";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, EllipsisVertical, Trash } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { CollectionDropDialog } from "./collection-drop-dialog";
 import { CollectionSelector } from "./collection-selector";
 import { ConnectionSelector } from "./connection-selector";
+import { Button } from "./ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
+import { DialogTrigger } from "./ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -54,11 +63,37 @@ export function AppSidebar() {
                   <SidebarMenu>
                     {collections.map((collection) => (
                       <SidebarMenuItem key={collection.name}>
-                        <SidebarMenuButton asChild>
-                          <Link href={`/dashboard/${collection.name}`}>
-                            {collection.name}
-                          </Link>
-                        </SidebarMenuButton>
+                        <div className="flex space-x-2">
+                          <SidebarMenuButton asChild>
+                            <Link
+                              href={`/dashboard/${collection.name}`}
+                              className="flex justify-between"
+                            >
+                              {collection.name}
+                            </Link>
+                          </SidebarMenuButton>
+                          <CollectionDropDialog collection={collection}>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="px-0 cursor-pointer"
+                                >
+                                  <EllipsisVertical size={8} />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent>
+                                <DialogTrigger asChild>
+                                  <DropdownMenuItem>
+                                    <Trash />
+                                    Drop
+                                  </DropdownMenuItem>
+                                </DialogTrigger>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </CollectionDropDialog>
+                        </div>
                       </SidebarMenuItem>
                     ))}
                   </SidebarMenu>
