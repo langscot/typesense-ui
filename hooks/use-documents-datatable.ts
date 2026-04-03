@@ -49,11 +49,6 @@ export function useDocumentsDataTable(collectionName: string) {
   });
 
   useEffect(() => {
-    console.log("Saving preferences", {
-      pagination,
-      sorting,
-      columnVisibility,
-    });
     setDocumentsDataTablePreferences(collectionName, {
       pagination,
       sorting,

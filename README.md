@@ -4,7 +4,9 @@ A clean, simple, and decluttered Next.js UI for managing Typesense instances. Th
 
 ## 📊 Status
 
-This is a learning-focused project currently in active development. While functional for basic use cases (see below), it currently lacks some key features. For a feature complete UI, please check out [Typesense Dashboard](https://github.com/bfritscher/typesense-dashboard) by @bfritscher.
+**This project has been shelved.** I have since moved to [Qdrant](https://qdrant.tech/) as my primary vector database, which comes with a built-in UI/dashboard that covers everything I need. As a result, this project is no longer being actively developed or maintained.
+
+For those still using Typesense and looking for a feature-complete UI, please check out [Typesense Dashboard](https://github.com/bfritscher/typesense-dashboard) by @bfritscher.
 
 ## ✨ Features
 

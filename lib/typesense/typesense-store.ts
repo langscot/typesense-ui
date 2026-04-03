@@ -181,11 +181,6 @@ export const useTypesenseStore = create<TypesenseState>()(
           if (connection) {
             set({ activeConnectionId: id });
 
-            if (typeof window !== "undefined") {
-              (window as any).typesenseClient = connection.client;
-              console.log("Typesense client available at window.typesenseClient");
-            }
-
             // Automatically fetch collections
             get().fetchCollections();
           } else {
